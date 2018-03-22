@@ -1,6 +1,5 @@
-MongoLog.Tests/bin/
-MongoLog.Tests/obj/Debug/
-MongoLog/bin/
-MongoLog/obj/Debug/
+LogServer.Tests/bin/
+LogServer.Tests/obj/Debug/
+LogServer/bin/
+LogServer/obj/Debug/
 .vs/
-MongoLog/obj/Release/
