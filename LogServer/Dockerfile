@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.0.0-sdk
+FROM microsoft/dotnet
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
