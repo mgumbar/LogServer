@@ -1,8 +1,8 @@
-FROM microsoft/dotnet
+FROM microsoft/aspnetcore:2.0.0
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY LogServer.csproj .
+COPY *.csproj .
 RUN dotnet restore
 
 # Copy everything else and build
