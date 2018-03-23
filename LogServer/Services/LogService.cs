@@ -71,7 +71,7 @@ namespace LogServer.Services
                                          logNameQuery);
 
             //& builder.Eq("logname", logName);
-            var documentArray = collection.Find(filter).Limit(500).ToList();
+            var documentArray = collection.Find(filter).Limit(20000).ToList();
             var result = new List<string>();
             foreach (var document in documentArray)
             {
