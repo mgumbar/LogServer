@@ -13,4 +13,4 @@ RUN dotnet publish -c Release -o out
 FROM microsoft/aspnetcore:2.0
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "LogServer.dll", "--server.urls", "http://0.0.0.0:8000"]
+ENTRYPOINT ["dotnet", "LogServer.dll"]
