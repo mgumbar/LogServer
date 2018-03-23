@@ -1,16 +1,16 @@
-FROM microsoft/dotnet
+FROM microsoft/aspnetcore-build:2.0 AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY *.csproj .
+COPY *.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY . .
+COPY . ./
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-# FROM microsoft/aspnetcore:2.0
-# WORKDIR /LogServer
-# COPY --from=build-env /LogServer/out .
-ENTRYPOINT ["dotnet", "out/LogServer.dll", "--server.urls", "http://0.0.0.0:5000"]
+FROM microsoft/aspnetcore:2.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "LogServer.dll"]
