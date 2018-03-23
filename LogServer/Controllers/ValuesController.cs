@@ -35,7 +35,7 @@ namespace LogServer.Controllers
         }
 
         [HttpPost]
-        public List<string> Get(string application, string startDate, string endDate, string data, string Username)
+        public List<string> Get(string application, string startDate, string endDate, string data, string Username, int limit, int page, int pageSize)
         {
             var builder = new ConfigurationBuilder()
                         .SetBasePath(Directory.GetCurrentDirectory())
@@ -48,7 +48,7 @@ namespace LogServer.Controllers
                 startDate = DateTime.Now.AddDays(-365).ToString();
             if (String.IsNullOrEmpty(endDate))
                 endDate = DateTime.Now.ToString();
-            var logList = LogService.Instance.GetLogsJson(application, DateTime.Parse(startDate), DateTime.Parse(endDate), "", "");
+            var logList = LogService.Instance.GetLogsJson(application, DateTime.Parse(startDate), DateTime.Parse(endDate), "", "", limit, page, pageSize);
 
 
             return logList;

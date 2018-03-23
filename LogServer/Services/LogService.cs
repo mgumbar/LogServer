@@ -53,7 +53,7 @@ namespace LogServer.Services
 
         }
 
-        public List<string> GetLogsJson(string applicationName, DateTime starDate, DateTime endDate, string data, string logName)
+        public List<string> GetLogsJson(string applicationName, DateTime starDate, DateTime endDate, string data, string logName, int? limit = null, int page = 1, int pageSize = 10)
         {
             var client = new MongoClient(this.connectionString);
             var database = client.GetDatabase("log");
@@ -71,7 +71,12 @@ namespace LogServer.Services
                                          logNameQuery);
 
             //& builder.Eq("logname", logName);
-            var documentArray = collection.Find(filter).Limit(20000).ToList();
+            if (limit == null || limit == 0)
+                limit = 500;
+            if (page < 1)
+                page = 1;
+            int currentPage = (page - 1) * pageSize;
+            var documentArray = collection.Find(filter).Skip(currentPage).Limit(pageSize).ToList();
             var result = new List<string>();
             foreach (var document in documentArray)
             {
