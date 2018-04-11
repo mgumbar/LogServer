@@ -7,14 +7,17 @@ using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using LogServer.Services;
+using LogServer.Models;
+using MongoDB.Bson.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace LogServer.Controllers
 {
-    [Route("api/[controller]")]
-    public class ValuesController : Controller
+    [Route("api/[controller]/[action]")]
+    public class LogsController : Controller
     {
 
-        public ValuesController(IConfiguration configuration) => Configuration = configuration;
+        public LogsController(IConfiguration configuration) => Configuration = configuration;
 
         public static IConfiguration Configuration { get; set; }
         // GET api/values
@@ -50,10 +53,32 @@ namespace LogServer.Controllers
                 endDate = DateTime.Now.ToString();
             var logList = LogService.Instance.GetLogsJson(application, DateTime.Parse(startDate), DateTime.Parse(endDate), "", "", limit, page, pageSize);
 
+            var result = new List<CoreactAuditLog>();
+            foreach (var document in logList)
+            {
+                var log = BsonSerializer.Deserialize<CoreactAuditLog>(document);
+                result.Add(log);
+            }
 
             return logList;
         }
 
+        [HttpPost]
+        public bool LogCoreactEvents([FromBody]JObject request)
+        {
+            int? entId = String.IsNullOrEmpty(request["entId"].ToString()) ? 0 : request["entId"].ToObject<int>();
+            int? entProdId = String.IsNullOrEmpty(request["entProdId"].ToString()) ? 0 : request["entProdId"].ToObject<int>();
+            return LogService.Instance.InsertCrEvents(request["logId"].ToObject<int>(),
+                                                    request["logType"].ToString(),
+                                                    request["category"].ToString(),
+                                                    request["date"].ToString(),
+                                                    request["userId"].ToObject<int>(),
+                                                    request["userName"].ToString(),
+                                                    request["details"].ToString(),
+                                                    request["message"].ToString(),
+                                                    entId,
+                                                    entProdId);
+        }
 
         // GET api/values/5
         [HttpGet("{id}")]

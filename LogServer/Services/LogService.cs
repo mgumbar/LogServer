@@ -21,6 +21,9 @@ namespace LogServer.Services
 
         private static LogService instance;
 
+        private MongoClient client;
+        private IMongoDatabase database;
+
         public static LogService Instance
         {
 
@@ -36,7 +39,7 @@ namespace LogServer.Services
                     {
                         if (instance == null)
                         {
-                            instance = new LogService(config["AppConfiguration:connectionString"]);
+                            instance = new LogService(config["AppConfiguration:connectionString"], config["AppConfiguration:db"]);
                         }
                     }
                 }
@@ -47,10 +50,51 @@ namespace LogServer.Services
 
         private string connectionString;
 
-        public LogService(string inConnectionString)
+        public LogService(string inConnectionString, string db)
         {
             connectionString = inConnectionString;
+            client = new MongoClient(this.connectionString);
+            database = client.GetDatabase(db);
+        }
 
+        public bool InsertCrEvents(int logId, string logType, string category, string date, int userId, string userName, string details, string message, int? entId = null, int? entProdId = null)
+        {
+            try
+            {
+                
+                var collection = database.GetCollection<CoreactAuditLog>("log");
+                collection.InsertOneAsync(new CoreactAuditLog
+                {
+                    LogId = logId,
+                    LogTyp = logType,
+                    Cat = category,
+                    Dte = DateTime.Parse(date),
+                    UserId = userId,
+                    UserName = userName,
+                    Det = details,
+                    Msg = message,
+                    EntId = entId,
+                    EndProdId = entProdId,
+                    ApplicationName = "coreact_audits"
+                });
+            }
+            catch (Exception e)
+            {
+                this.LogException(logId, e.Message, "coreact_audits");
+                return false;
+            }
+            return true;
+        }
+
+        private void LogException(int logId, string errorMessage, string application)
+        {
+            var collection = database.GetCollection<ExceptionLogger>("log");
+            collection.InsertOneAsync(new ExceptionLogger
+            {
+                LogId = logId,
+                ErrorMessage = errorMessage,
+                ApplicationName = "log_server"
+            });
         }
 
         public List<string> GetLogsJson(string applicationName, DateTime starDate, DateTime endDate, string data, string logName, int? limit = null, int page = 1, int pageSize = 10)
@@ -62,15 +106,11 @@ namespace LogServer.Services
                 applicationName = null;
             var applicationNameQuery = String.IsNullOrEmpty(applicationName) ? String.Format("application_name: {{ $ne:null }}") : String.Format("application_name: '{0}'", applicationName);
             var dataQuery = String.IsNullOrEmpty(data) ? String.Format(", data: {{ $ne:null }}") : String.Format(", data: RegExp('{0}')", data);
-            var logNameQuery = String.IsNullOrEmpty(logName) ? String.Format(", logname: {{ $ne:null }}") : String.Format(", logname: '{0}", logName);
-            var filter = String.Format(@"{{{0}, date_time: {{$gte: ISODate('{1}'), $lte: ISODate('{2}')}}{3}{4} }}",
+            var filter = String.Format(@"{{{0}, dte: {{$gte: ISODate('{1}'), $lte: ISODate('{2}')}}}}",
                                          applicationNameQuery,
                                          starDate.AddHours(-2).ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                                         endDate.AddHours(-2).ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                                         dataQuery,
-                                         logNameQuery);
+                                         endDate.AddHours(-2).ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
-            //& builder.Eq("logname", logName);
             if (limit == null || limit == 0)
                 limit = 500;
             if (page < 1)
