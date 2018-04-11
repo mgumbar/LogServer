@@ -85,7 +85,7 @@ namespace LogServer.Controllers
             catch (Exception e)
             {
                 var logId = String.IsNullOrEmpty(request["logId"].ToString()) ? 0 : request["logId"].ToObject<int>();
-                LogService.Instance.LogException(logId, e.Message, "coreact_audits");
+                LogService.Instance.LogException(logId, e.Message, "log_server");
                 throw;
             }
         }
