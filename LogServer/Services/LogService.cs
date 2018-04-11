@@ -69,7 +69,7 @@ namespace LogServer.Services
                     LogId = logId,
                     LogTyp = logType,
                     Cat = category,
-                    Dte = DateTime.ParseExact(date, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture),
+                    Dte = DateTime.ParseExact(date, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                     UserId = userId,
                     UserName = userName,
                     Det = details,
