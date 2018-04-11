@@ -87,7 +87,7 @@ namespace LogServer.Services
             return true;
         }
 
-        private void LogException(int logId, string errorMessage, string application)
+        public void LogException(int logId, string errorMessage, string application)
         {
             var collection = database.GetCollection<ExceptionLogger>("log");
             collection.InsertOneAsync(new ExceptionLogger

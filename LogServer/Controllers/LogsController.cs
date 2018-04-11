@@ -66,18 +66,28 @@ namespace LogServer.Controllers
         [HttpPost]
         public bool LogCoreactEvents([FromBody]JObject request)
         {
-            int? entId = String.IsNullOrEmpty(request["entId"].ToString()) ? 0 : request["entId"].ToObject<int>();
-            int? entProdId = String.IsNullOrEmpty(request["entProdId"].ToString()) ? 0 : request["entProdId"].ToObject<int>();
-            return LogService.Instance.InsertCrEvents(request["logId"].ToObject<int>(),
-                                                    request["logType"].ToString(),
-                                                    request["category"].ToString(),
-                                                    request["date"].ToString(),
-                                                    request["userId"].ToObject<int>(),
-                                                    request["userName"].ToString(),
-                                                    request["details"].ToString(),
-                                                    request["message"].ToString(),
-                                                    entId,
-                                                    entProdId);
+            try
+            {
+
+                int? entId = String.IsNullOrEmpty(request["entId"].ToString()) ? 0 : request["entId"].ToObject<int>();
+                int? entProdId = String.IsNullOrEmpty(request["entProdId"].ToString()) ? 0 : request["entProdId"].ToObject<int>();
+                return LogService.Instance.InsertCrEvents(request["logId"].ToObject<int>(),
+                                                        request["logType"].ToString(),
+                                                        request["category"].ToString(),
+                                                        request["date"].ToString(),
+                                                        request["userId"].ToObject<int>(),
+                                                        request["userName"].ToString(),
+                                                        request["details"].ToString(),
+                                                        request["message"].ToString(),
+                                                        entId,
+                                                        entProdId);
+            }
+            catch (Exception e)
+            {
+                var logId = String.IsNullOrEmpty(request["logId"].ToString()) ? 0 : request["logId"].ToObject<int>();
+                LogService.Instance.LogException(logId, e.Message, "coreact_audits");
+                throw;
+            }
         }
 
         // GET api/values/5
