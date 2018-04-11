@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ namespace LogServer.Services
                     LogId = logId,
                     LogTyp = logType,
                     Cat = category,
-                    Dte = DateTime.Parse(date),
+                    Dte = DateTime.ParseExact(date, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture),
                     UserId = userId,
                     UserName = userName,
                     Det = details,
