@@ -60,34 +60,42 @@ namespace LogServer.Controllers
         [HttpPost]
         public IActionResult Logs([FromBody]JObject request)
         {
-            string application = request["application"].ToString();
-            string startDate = request["startDate"].ToString();
-            string endDate = request["endDate"].ToString();
-            string Username = request["Username"].ToString();
-            int limit = request["limit"].ToObject<int>();
-            int page = request["page"].ToObject<int>();
-            int pageSize = request["pageSize"].ToObject<int>();
+            try
+            {
+                string application = request["application"].ToString();
+                string startDate = request["startDate"].ToString();
+                string endDate = request["endDate"].ToString();
+                string Username = request["Username"].ToString();
+                int limit = request["limit"].ToObject<int>();
+                int page = request["page"].ToObject<int>();
+                int pageSize = request["pageSize"].ToObject<int>();
 
 
-            var builder = new ConfigurationBuilder()
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json");
-            var config = builder.Build();
+                var builder = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json");
+                var config = builder.Build();
 
-            if (String.IsNullOrEmpty(application))
-                application = "";
-            if (String.IsNullOrEmpty(startDate))
-                startDate = DateTime.Now.AddDays(-365).ToString();
-            if (String.IsNullOrEmpty(endDate))
-                endDate = DateTime.Now.ToString();
-            var logList = LogService.Instance.GetLogsJson(application, DateTime.Parse(startDate), DateTime.Parse(endDate), "", "", limit, page, pageSize);
+                if (String.IsNullOrEmpty(application))
+                    application = "";
+                if (String.IsNullOrEmpty(startDate))
+                    startDate = DateTime.Now.AddDays(-365).ToString();
+                if (String.IsNullOrEmpty(endDate))
+                    endDate = DateTime.Now.ToString();
+                var logList = LogService.Instance.GetLogsJson(application, DateTime.Parse(startDate), DateTime.Parse(endDate), "", "", limit, page, pageSize);
 
-            //var result = new List<string>();
-            //foreach (var document in logList)
-            //{
-            //    result.Add(log);
-            //}
-            return Json(logList);
+                //var result = new List<string>();
+                //foreach (var document in logList)
+                //{
+                //    result.Add(log);
+                //}
+                return Json(logList);
+            }
+            catch (Exception e)
+            {
+                LogService.Instance.LogException(0, e.Message, "log_server");
+                throw;
+            }
         }
 
         [HttpPost]
