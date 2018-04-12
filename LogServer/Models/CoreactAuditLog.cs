@@ -11,8 +11,9 @@ namespace LogServer.Models
     [BsonIgnoreExtraElements]
     public class CoreactAuditLog
     {
+        [JsonIgnore]
         [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId Id { get; set; }
+        public ObjectId Id { get;set; }
         [BsonElement("log_id")]
         [JsonProperty("log_id")]
         public int LogId { get; set; }
@@ -46,5 +47,6 @@ namespace LogServer.Models
         [BsonElement("application_name")]
         [JsonProperty("application_name")]
         public string ApplicationName { get; set; }
+
     }
 }

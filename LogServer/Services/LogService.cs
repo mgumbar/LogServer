@@ -1,6 +1,7 @@
 ﻿using LogServer.Models;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
@@ -98,7 +99,7 @@ namespace LogServer.Services
             });
         }
 
-        public List<string> GetLogsJson(string applicationName, DateTime starDate, DateTime endDate, string data, string logName, int? limit = null, int page = 1, int pageSize = 10)
+        public List<CoreactAuditLog> GetLogsJson(string applicationName, DateTime starDate, DateTime endDate, string data, string logName, int? limit = null, int page = 1, int pageSize = 10)
         {
             var client = new MongoClient(this.connectionString);
             var database = client.GetDatabase("log");
@@ -118,10 +119,10 @@ namespace LogServer.Services
                 page = 1;
             int currentPage = (page - 1) * pageSize;
             var documentArray = collection.Find(filter).Skip(currentPage).Limit(pageSize).ToList();
-            var result = new List<string>();
+            var result = new List<CoreactAuditLog>();
             foreach (var document in documentArray)
             {
-                var log = document.ToJson();
+                var log = BsonSerializer.Deserialize<CoreactAuditLog>(document);
                 result.Add(log);
             }
             return result;
