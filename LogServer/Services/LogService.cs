@@ -99,7 +99,7 @@ namespace LogServer.Services
             });
         }
 
-        public List<CoreactAuditLog> GetLogsJson(string applicationName, DateTime starDate, DateTime endDate, string data, string logName, int? limit = null, int page = 1, int pageSize = 10)
+        public List<CoreactAuditLog> GetLogsJson(string applicationName, out long nbPages, DateTime starDate, DateTime endDate, int? limit = null, int page = 1, int pageSize = 10, string userId = null, string entityId = null)
         {
             var client = new MongoClient(this.connectionString);
             var database = client.GetDatabase("log");
@@ -107,17 +107,22 @@ namespace LogServer.Services
             if (applicationName.ToLower() == "global")
                 applicationName = null;
             var applicationNameQuery = String.IsNullOrEmpty(applicationName) ? String.Format("application_name: {{ $ne:null }}") : String.Format("application_name: '{0}'", applicationName);
-            var dataQuery = String.IsNullOrEmpty(data) ? String.Format(", data: {{ $ne:null }}") : String.Format(", data: RegExp('{0}')", data);
-            var filter = String.Format(@"{{{0}, dte: {{$gte: ISODate('{1}'), $lte: ISODate('{2}')}}}}",
+            var userIdQuery = String.IsNullOrEmpty(userId) ? "" : String.Format("user_id: {0}, ", userId);
+            var entityIdQuery = String.IsNullOrEmpty(entityId) ? "" : String.Format("ent_id: {0}, ", entityId);
+            //var dataQuery = String.IsNullOrEmpty(data) ? String.Format(", data: {{ $ne:null }}") : String.Format(", data: RegExp('{0}')", data);
+            var filter = String.Format(@"{{{0}, {1}{2}dte: {{$gte: ISODate('{3}'), $lte: ISODate('{4}')}}}}",
                                          applicationNameQuery,
-                                         starDate.AddHours(-2).ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                                         endDate.AddHours(-2).ToString("yyyy-MM-ddTHH:mm:ssZ"));
+                                         userIdQuery,
+                                         entityIdQuery,
+                                         starDate.AddHours(-1).ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                                         endDate.AddHours(-1).ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
             if (limit == null || limit == 0)
                 limit = 500;
             if (page < 1)
                 page = 1;
             int currentPage = (page - 1) * pageSize;
+            nbPages = collection.Find(filter).Count();
             var documentArray = collection.Find(filter).Skip(currentPage).Limit(pageSize).ToList();
             var result = new List<CoreactAuditLog>();
             foreach (var document in documentArray)

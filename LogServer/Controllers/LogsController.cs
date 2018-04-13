@@ -66,7 +66,8 @@ namespace LogServer.Controllers
                 string application = request["application"].ToString();
                 string startDate = request["startDate"].ToString();
                 string endDate = request["endDate"].ToString();
-                string Username = request["Username"].ToString();
+                string userId = String.IsNullOrEmpty(request["userId"].ToString()) ? null : request["userId"].ToString();
+                string entityID = String.IsNullOrEmpty(request["entityID"].ToString()) ? null : request["entityID"].ToString();
                 int limit = request["limit"].ToObject<int>();
                 int page = request["page"].ToObject<int>();
                 int pageSize = request["pageSize"].ToObject<int>();
@@ -83,21 +84,26 @@ namespace LogServer.Controllers
                     startDate = DateTime.Now.AddDays(-365).ToString();
                 if (String.IsNullOrEmpty(endDate))
                     endDate = DateTime.Now.ToString();
+                long nbPages;
                 var logList = LogService.Instance.GetLogsJson(application, 
+                                                              out nbPages,
                                                               DateTime.ParseExact(startDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture), 
                                                               DateTime.ParseExact(endDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture), 
-                                                              "", 
-                                                              "", 
                                                               limit, 
                                                               page, 
-                                                              pageSize);
+                                                              pageSize,
+                                                              userId,
+                                                              entityID);
 
                 //var result = new List<string>();
                 //foreach (var document in logList)
                 //{
                 //    result.Add(log);
                 //}
-                return Json(logList);
+                return Json(new {
+                    totalPages = nbPages,
+                    logs = logList
+                });
             }
             catch (Exception e)
             {
