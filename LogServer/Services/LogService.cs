@@ -122,7 +122,8 @@ namespace LogServer.Services
                 page = 1;
             int currentPage = (page - 1) * pageSize;
             nbPages = collection.Find(filter).Count();
-            var documentArray = collection.Find(filter).Skip(currentPage).Limit(pageSize).ToList();
+            var sort = Builders<BsonDocument>.Sort.Descending("dte");
+            var documentArray = collection.Find(filter).Skip(currentPage).Limit(pageSize).Sort(sort).ToList();
             var result = new List<CoreactAuditLog>();
             foreach (var document in documentArray)
             {
