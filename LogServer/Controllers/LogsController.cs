@@ -21,42 +21,6 @@ namespace LogServer.Controllers
         public LogsController(IConfiguration configuration) => Configuration = configuration;
 
         public static IConfiguration Configuration { get; set; }
-        // GET api/values
-        //[HttpGet]
-        //public List<CoreactAuditLog> Get()
-        //{
-        //    var builder = new ConfigurationBuilder()
-        //                .SetBasePath(Directory.GetCurrentDirectory())
-        //                .AddJsonFile("appsettings.json");
-        //    var config = builder.Build();
-
-        //    var startDate = DateTime.Now.AddDays(-365).ToString();
-        //    var endDate = DateTime.Now.ToString();
-        //    var logList  = LogService.Instance.GetLogsJson("", DateTime.Parse(startDate), DateTime.Parse(endDate), "", "");
-
-
-        //    return logList;
-        //}
-
-        //[HttpPost]
-        //public List<CoreactAuditLog> Get(string application, string startDate, string endDate, string data, string Username, int limit, int page, int pageSize)
-        //{
-        //    var builder = new ConfigurationBuilder()
-        //                .SetBasePath(Directory.GetCurrentDirectory())
-        //                .AddJsonFile("appsettings.json");
-        //    var config = builder.Build();
-
-        //    if (String.IsNullOrEmpty(application))
-        //        application = "";
-        //    if (String.IsNullOrEmpty(startDate))
-        //        startDate = DateTime.Now.AddDays(-365).ToString();
-        //    if (String.IsNullOrEmpty(endDate))
-        //        endDate = DateTime.Now.ToString();
-        //    var logList = LogService.Instance.GetLogsJson(application, DateTime.Parse(startDate), DateTime.Parse(endDate), "", "", limit, page, pageSize);
-
-        //    var result = new List<CoreactAuditLog>();
-        //    return logList;
-        //}
 
         [HttpPost]
         public IActionResult Logs([FromBody]JObject request)
@@ -71,12 +35,6 @@ namespace LogServer.Controllers
                 int limit = request["limit"].ToObject<int>();
                 int page = request["page"].ToObject<int>();
                 int pageSize = request["pageSize"].ToObject<int>();
-
-
-                var builder = new ConfigurationBuilder()
-                            .SetBasePath(Directory.GetCurrentDirectory())
-                            .AddJsonFile("appsettings.json");
-                var config = builder.Build();
 
                 if (String.IsNullOrEmpty(application))
                     application = "";
@@ -94,12 +52,6 @@ namespace LogServer.Controllers
                                                               pageSize,
                                                               userId,
                                                               entityID);
-
-                //var result = new List<string>();
-                //foreach (var document in logList)
-                //{
-                //    result.Add(log);
-                //}
                 return Json(new {
                     totalPages = nbPages,
                     logs = logList
@@ -140,42 +92,5 @@ namespace LogServer.Controllers
             }
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
-        //[HttpPost]
-        //public List<string> Post([FromBody]string application, string startDate, string endDate, string data)
-        //{
-        //    var builder = new ConfigurationBuilder()
-        //    .SetBasePath(Directory.GetCurrentDirectory())
-        //    .AddJsonFile("appsettings.json");
-        //    var config = builder.Build();
-
-        //    if (String.IsNullOrEmpty(startDate))
-        //        startDate = DateTime.Now.AddDays(-365).ToString();
-        //    if (String.IsNullOrEmpty(endDate))
-        //        endDate = DateTime.Now.ToString();
-        //    var logList = LogService.Instance.GetLogsJson(application, DateTime.Parse(startDate), DateTime.Parse(endDate), "", "");
-
-
-        //    return logList;
-        //}
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

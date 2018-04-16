@@ -25,6 +25,8 @@ namespace LogServer.Services
 
         private MongoClient client;
         private IMongoDatabase database;
+        private string dbName = "log";
+        private string tableName = "log";
 
         public static LogService Instance
         {
@@ -64,7 +66,7 @@ namespace LogServer.Services
             try
             {
                 
-                var collection = database.GetCollection<CoreactAuditLog>("log");
+                var collection = database.GetCollection<CoreactAuditLog>(this.tableName);
                 collection.InsertOneAsync(new CoreactAuditLog
                 {
                     LogId = logId,
@@ -90,7 +92,7 @@ namespace LogServer.Services
 
         public void LogException(int logId, string errorMessage, string application)
         {
-            var collection = database.GetCollection<ExceptionLogger>("log");
+            var collection = database.GetCollection<ExceptionLogger>(this.tableName);
             collection.InsertOneAsync(new ExceptionLogger
             {
                 LogId = logId,
@@ -101,15 +103,12 @@ namespace LogServer.Services
 
         public List<CoreactAuditLog> GetLogsJson(string applicationName, out long nbPages, DateTime starDate, DateTime endDate, int? limit = null, int page = 1, int pageSize = 10, string userId = null, string entityId = null)
         {
-            var client = new MongoClient(this.connectionString);
-            var database = client.GetDatabase("log");
-            var collection = database.GetCollection<BsonDocument>("log");
+            var collection = database.GetCollection<BsonDocument>(this.tableName);
             if (applicationName.ToLower() == "global")
                 applicationName = null;
             var applicationNameQuery = String.IsNullOrEmpty(applicationName) ? String.Format("application_name: {{ $ne:null }}") : String.Format("application_name: '{0}'", applicationName);
             var userIdQuery = String.IsNullOrEmpty(userId) ? "" : String.Format("user_id: {0}, ", userId);
             var entityIdQuery = String.IsNullOrEmpty(entityId) ? "" : String.Format("ent_id: {0}, ", entityId);
-            //var dataQuery = String.IsNullOrEmpty(data) ? String.Format(", data: {{ $ne:null }}") : String.Format(", data: RegExp('{0}')", data);
             var filter = String.Format(@"{{{0}, {1}{2}dte: {{$gte: ISODate('{3}'), $lte: ISODate('{4}')}}}}",
                                          applicationNameQuery,
                                          userIdQuery,
