@@ -39,9 +39,9 @@ namespace LogServer.Controllers
                 if (String.IsNullOrEmpty(application))
                     application = "";
                 if (String.IsNullOrEmpty(startDate))
-                    startDate = DateTime.Now.AddDays(-365).ToString();
+                    startDate = DateTime.Now.AddDays(-365).ToString("dd/MM/yyyy HH:mm:ss");
                 if (String.IsNullOrEmpty(endDate))
-                    endDate = DateTime.Now.ToString();
+                    endDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                 var logList = LogService.Instance.GetLogsJson(application,
                                                               out long nbPages,
                                                               DateTime.ParseExact(startDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
@@ -58,7 +58,7 @@ namespace LogServer.Controllers
             }
             catch (Exception e)
             {
-                var errorMessage = e.Message + "params: " + request.ToString();
+                var errorMessage = e.Message + "params: " + request.ToString() + e.StackTrace;
                 LogService.Instance.LogException(0, errorMessage);
                 throw;
             }
