@@ -57,7 +57,7 @@ namespace LogServer.Services
         {
             connectionString = inConnectionString;
             client = new MongoClient(this.connectionString);
-            database = client.GetDatabase(dbName);
+            database = client.GetDatabase(db);
         }
 
         public bool InsertCrEvents(int logId, string logType, string category, string date, int userId, string userName, string details, string message, int? entId = null, int? entProdId = null)
