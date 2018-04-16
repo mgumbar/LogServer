@@ -42,13 +42,12 @@ namespace LogServer.Controllers
                     startDate = DateTime.Now.AddDays(-365).ToString();
                 if (String.IsNullOrEmpty(endDate))
                     endDate = DateTime.Now.ToString();
-                long nbPages;
-                var logList = LogService.Instance.GetLogsJson(application, 
-                                                              out nbPages,
-                                                              DateTime.ParseExact(startDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture), 
-                                                              DateTime.ParseExact(endDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture), 
-                                                              limit, 
-                                                              page, 
+                var logList = LogService.Instance.GetLogsJson(application,
+                                                              out long nbPages,
+                                                              DateTime.ParseExact(startDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                                                              DateTime.ParseExact(endDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                                                              limit,
+                                                              page,
                                                               pageSize,
                                                               userId,
                                                               entityID);
@@ -60,7 +59,7 @@ namespace LogServer.Controllers
             catch (Exception e)
             {
                 var errorMessage = e.Message + "params: " + request.ToString();
-                LogService.Instance.LogException(0, errorMessage, "log_server");
+                LogService.Instance.LogException(0, errorMessage);
                 throw;
             }
         }
@@ -87,7 +86,7 @@ namespace LogServer.Controllers
             catch (Exception e)
             {
                 var logId = String.IsNullOrEmpty(request["logId"].ToString()) ? 0 : request["logId"].ToObject<int>();
-                LogService.Instance.LogException(logId, e.Message, "log_server");
+                LogService.Instance.LogException(logId, e.Message);
                 throw;
             }
         }

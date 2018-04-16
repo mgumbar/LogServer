@@ -84,13 +84,13 @@ namespace LogServer.Services
             }
             catch (Exception e)
             {
-                this.LogException(logId, e.Message, "coreact_audits");
+                this.LogException(logId, e.Message);
                 return false;
             }
             return true;
         }
 
-        public void LogException(int logId, string errorMessage, string application)
+        public void LogException(int logId, string errorMessage)
         {
             var collection = database.GetCollection<ExceptionLogger>(this.tableName);
             collection.InsertOneAsync(new ExceptionLogger
