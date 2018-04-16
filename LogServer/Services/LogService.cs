@@ -25,7 +25,6 @@ namespace LogServer.Services
 
         private MongoClient client;
         private IMongoDatabase database;
-        private string dbName = "log";
         private string tableName = "log";
 
         public static LogService Instance
@@ -58,7 +57,7 @@ namespace LogServer.Services
         {
             connectionString = inConnectionString;
             client = new MongoClient(this.connectionString);
-            database = client.GetDatabase(db);
+            database = client.GetDatabase(dbName);
         }
 
         public bool InsertCrEvents(int logId, string logType, string category, string date, int userId, string userName, string details, string message, int? entId = null, int? entProdId = null)
