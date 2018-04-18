@@ -60,13 +60,13 @@ namespace LogServer.Services
             database = client.GetDatabase(db);
         }
 
-        public bool InsertCrEvents(int logId, string logType, string category, string date, int userId, string userName, string details, string message, int? entId = null, int? entProdId = null)
+        public bool InsertCrEvents(int logId, string logType, string category, string date, int userId, string userName, string details, string message, int? entId = null, int? entProdId = null, string applicationName = "audits")
         {
             try
             {
                 
-                var collection = database.GetCollection<CoreactAuditLog>(this.tableName);
-                collection.InsertOneAsync(new CoreactAuditLog
+                var collection = database.GetCollection<AuditLog>(this.tableName);
+                collection.InsertOneAsync(new AuditLog
                 {
                     LogId = logId,
                     LogTyp = logType,
@@ -78,7 +78,7 @@ namespace LogServer.Services
                     Msg = message,
                     EntId = entId,
                     EndProdId = entProdId,
-                    ApplicationName = "coreact_audits"
+                    ApplicationName = applicationName
                 });
             }
             catch (Exception e)
@@ -100,7 +100,7 @@ namespace LogServer.Services
             });
         }
 
-        public List<CoreactAuditLog> GetLogsJson(string applicationName, out long nbPages, DateTime starDate, DateTime endDate, int? limit = null, int page = 1, int pageSize = 10, string userId = null, string entityId = null)
+        public List<AuditLog> GetLogsJson(string applicationName, out long nbPages, DateTime starDate, DateTime endDate, int? limit = null, int page = 1, int pageSize = 10, string userId = null, string entityId = null)
         {
             var collection = database.GetCollection<BsonDocument>(this.tableName);
             if (applicationName.ToLower() == "global")
@@ -123,10 +123,10 @@ namespace LogServer.Services
             nbPages = collection.Find(filter).Count();
             var sort = Builders<BsonDocument>.Sort.Descending("dte");
             var documentArray = collection.Find(filter).Skip(currentPage).Limit(pageSize).Sort(sort).ToList();
-            var result = new List<CoreactAuditLog>();
+            var result = new List<AuditLog>();
             foreach (var document in documentArray)
             {
-                var log = BsonSerializer.Deserialize<CoreactAuditLog>(document);
+                var log = BsonSerializer.Deserialize<AuditLog>(document);
                 result.Add(log);
             }
             return result;

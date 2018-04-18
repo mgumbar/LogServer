@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace LogServer.Models
 {
     [BsonIgnoreExtraElements]
-    public class CoreactAuditLog
+    public class AuditLog
     {
         [JsonIgnore]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -30,6 +30,7 @@ namespace LogServer.Models
         [JsonProperty("user_id")]
         public int UserId { get; set; }
         [BsonElement("dte")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [JsonProperty("dte")]
         public DateTime Dte { get; set; }
         [BsonElement("det")]

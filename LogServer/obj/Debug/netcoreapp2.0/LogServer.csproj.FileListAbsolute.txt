@@ -3,9 +3,9 @@ C:\Users\gumbarm\developments\LogServer\LogServer\bin\Debug\netcoreapp2.0\LogSer
 C:\Users\gumbarm\developments\LogServer\LogServer\bin\Debug\netcoreapp2.0\LogServer.runtimeconfig.dev.json
 C:\Users\gumbarm\developments\LogServer\LogServer\bin\Debug\netcoreapp2.0\LogServer.dll
 C:\Users\gumbarm\developments\LogServer\LogServer\bin\Debug\netcoreapp2.0\LogServer.pdb
-C:\Users\gumbarm\developments\LogServer\LogServer\obj\Debug\netcoreapp2.0\LogServer.csprojResolveAssemblyReference.cache
 C:\Users\gumbarm\developments\LogServer\LogServer\obj\Debug\netcoreapp2.0\LogServer.csproj.CoreCompileInputs.cache
 C:\Users\gumbarm\developments\LogServer\LogServer\obj\Debug\netcoreapp2.0\LogServer.AssemblyInfoInputs.cache
 C:\Users\gumbarm\developments\LogServer\LogServer\obj\Debug\netcoreapp2.0\LogServer.AssemblyInfo.cs
 C:\Users\gumbarm\developments\LogServer\LogServer\obj\Debug\netcoreapp2.0\LogServer.dll
 C:\Users\gumbarm\developments\LogServer\LogServer\obj\Debug\netcoreapp2.0\LogServer.pdb
+C:\Users\gumbarm\developments\LogServer\LogServer\obj\Debug\netcoreapp2.0\LogServer.csprojResolveAssemblyReference.cache

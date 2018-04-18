@@ -39,7 +39,7 @@ namespace LogServer.Controllers
                 if (String.IsNullOrEmpty(application))
                     application = "";
                 if (String.IsNullOrEmpty(startDate))
-                    startDate = DateTime.Now.AddDays(-365).ToString("dd/MM/yyyy HH:mm:ss");
+                    startDate = DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss");
                 if (String.IsNullOrEmpty(endDate))
                     endDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                 var logList = LogService.Instance.GetLogsJson(application,
