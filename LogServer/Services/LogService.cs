@@ -113,7 +113,7 @@ namespace LogServer.Services
                                          userIdQuery,
                                          entityIdQuery,
                                          starDate.AddHours(-1).ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                                         endDate.AddHours(-1).ToString("yyyy-MM-ddTHH:mm:ssZ"));
+                                         endDate.AddDays(1).AddHours(-1).ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
             if (limit == null || limit == 0)
                 limit = 500;
